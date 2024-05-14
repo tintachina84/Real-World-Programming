@@ -29,14 +29,12 @@ public class Twootr {
     // tag::optional_onLogon[]
     var authenticatedUser = userRepository
         .get(userId)
-        .filter(userOfSameId ->
-        {
+        .filter(userOfSameId -> {
           var hashedPassword = KeyGenerator.hash(password, userOfSameId.getSalt());
           return Arrays.equals(hashedPassword, userOfSameId.getPassword());
         });
 
-    authenticatedUser.ifPresent(user ->
-    {
+    authenticatedUser.ifPresent(user -> {
       user.onLogon(receiverEndPoint);
       twootRepository.query(
           new TwootQuery()
@@ -69,8 +67,7 @@ public class Twootr {
     // tag::stream_onSendTwoot[]
     user.followers()
         .filter(User::isLoggedOn)
-        .forEach(follower ->
-        {
+        .forEach(follower -> {
           follower.receiveTwoot(twoot);
           userRepository.update(follower);
         });
@@ -82,8 +79,7 @@ public class Twootr {
   DeleteStatus onDeleteTwoot(final String userId, final String id) {
     return twootRepository
         .get(id)
-        .map(twoot ->
-        {
+        .map(twoot -> {
           var canDeleteTwoot = twoot.getSenderId().equals(userId);
           if (canDeleteTwoot) {
             twootRepository.delete(twoot);

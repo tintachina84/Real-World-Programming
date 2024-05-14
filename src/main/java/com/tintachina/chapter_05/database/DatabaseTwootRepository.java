@@ -66,8 +66,7 @@ public class DatabaseTwootRepository implements TwootRepository {
   public Optional<Twoot> get(final String id) {
     return statementRunner.extract(
         "SELECT * FROM twoots WHERE id = ?",
-        stmt ->
-        {
+        stmt -> {
           stmt.setString(1, id);
           var resultSet = stmt.executeQuery();
           return resultSet.next()
